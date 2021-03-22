@@ -3,6 +3,7 @@ const path = require('path');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
 const multer = require('multer')
+const fs = require('fs')
 
 const uploadRoute = require('./utils/upload');
 const postRoute = require('./utils/post');
@@ -34,7 +35,7 @@ const publicPath = path.join(__dirname, '../', "static");
 const upload = multer({storage: storage})
 
 // 日志
-server.use(logger('short'));
+// server.use(logger('short'));
 // Express 内置的静态文件中间件
 server.use(express.static(publicPath));
 // 处理表单提交，对应请求头application/x-www-form-urlencoded
@@ -45,14 +46,15 @@ server.use(bodyParser.urlencoded({
 server.use(bodyParser.json())
 // 处理上传文件
 server.use(upload.any())
-
+// 处理静态文件
+server.use(express.static('./static/'))
 // server.use，处理所有方法的请求，它的第一个路由参数可以不传，此时表示处理所有接口请求
 server.use(function(req, res, next) {
-  console.log('no-url');
+  // console.log('no-url');
   next();
 })
 server.use('/app', function(req, res, next) {
-  console.log('first');
+  // console.log('first');
   next();
 })
 /* 在程序中有可能还存在对动态路由请求响应静态文件情形，
@@ -64,8 +66,18 @@ server.get("/users/:userid/profile_photo", function(req, res) {
 function getProfilePhotoPath(id) {
   return path.join(__dirname, '../', 'static/images/2.png')
 }
-server.get('/download', (req, res) => {
+server.get('/download1', (req, res) => {
   res.download(path.join(__dirname, '../', 'static/json/address.json'))
+})
+server.get('/download2', (req, res) => {
+  res.download(path.join(__dirname, '../', 'static/images/2.png'))
+})
+server.get('/index.html', (req, res) => {
+  res.set('Content-Type', 'text/html');
+  fs.readFile('./static/index3.html', 'utf-8', (err, result) => {
+    console.log(err, result)
+    res.send(result)
+  })
 })
 
 postRoute.forEach(data => {

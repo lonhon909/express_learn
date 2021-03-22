@@ -18,7 +18,7 @@ function getlist() {
         data: 'req.body',
         msg: '登陆成功'
       })
-    }, 5000)
+    }, Math.floor(Math.random() * 5000))
   })
 }
 
@@ -34,7 +34,9 @@ module.exports = [
   {
     url: '/user.do',
     callback: async function(req, res) {
+      console.log(res.body, 1)
       let response = await getlist();
+      console.log(response)
       res.send(response);
     }
   }

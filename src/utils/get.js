@@ -30,8 +30,10 @@ module.exports = [
     }
   },
   {
-    url: '/second',
+    url: '/second2',
     callback: (req, res, next) => {
+      console.log(req.body)
+      res.set('Cache-Control', 'max-age=30')
       res.send({
         error: 0,
         msg: `输入成功，接收到的随机数为${req.randomNum}`
